@@ -1,0 +1,30 @@
+name: Ejecutar script del dólar
+
+on:
+  schedule:
+    - cron: '30 13 * * *'
+    - cron: '30 15 * * *'
+    - cron: '59 20 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v3
+
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Instalar dependencias
+      run: pip install -r requirements.txt
+
+    - name: Crear archivo de credenciales
+      run: echo "${{ secrets.GOOGLE_CREDS }}" > credenciales.json
+
+    - name: Ejecutar script
+      run: python save_to_sheets.py
